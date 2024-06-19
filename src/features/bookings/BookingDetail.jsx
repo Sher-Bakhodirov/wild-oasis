@@ -9,6 +9,11 @@ import Button from "../../ui/Button";
 import ButtonText from "../../ui/ButtonText";
 
 import { useMoveBack } from "../../hooks/useMoveBack";
+import { useBooking, useCheckOut, useDeleteBooking } from "./useBookings";
+import { useNavigate, useParams } from "react-router-dom";
+import Spinner from "../../ui/Spinner";
+import Modal from "../../ui/Modal";
+import ConfirmDelete from "../../ui/ConfirmDelete";
 
 const HeadingGroup = styled.div`
   display: flex;
@@ -17,11 +22,17 @@ const HeadingGroup = styled.div`
 `;
 
 function BookingDetail() {
-  const booking = {};
-  const status = "checked-in";
-
+  const { bookingId } = useParams();
+  const { booking = {}, isLoading, error } = useBooking(bookingId);
   const moveBack = useMoveBack();
+  const navigate = useNavigate();
+  const { checkOut, isCheckingOut } = useCheckOut();
+  const { deleteBooking, isDeleting } = useDeleteBooking();
 
+  if (isLoading) return <Spinner />;
+  if (error) return <div>Not found</div>;
+
+  const status = booking.status;
   const statusToTagName = {
     unconfirmed: "blue",
     "checked-in": "green",
@@ -32,7 +43,7 @@ function BookingDetail() {
     <>
       <Row type="horizontal">
         <HeadingGroup>
-          <Heading as="h1">Booking #X</Heading>
+          <Heading as="h1">Booking #{booking.id}</Heading>
           <Tag type={statusToTagName[status]}>{status.replace("-", " ")}</Tag>
         </HeadingGroup>
         <ButtonText onClick={moveBack}>&larr; Back</ButtonText>
@@ -41,6 +52,32 @@ function BookingDetail() {
       <BookingDataBox booking={booking} />
 
       <ButtonGroup>
+        <Modal>
+          <Modal.Window modalName="deleteBooking">
+            <ConfirmDelete
+              onConfirm={() => deleteBooking(booking.id)}
+              disabled={isDeleting}
+              resourceName={`Booking #${booking.id}`}
+            />
+          </Modal.Window>
+          <Modal.Open modalName="deleteBooking">
+            <Button variation="danger">Delete</Button>
+          </Modal.Open>
+        </Modal>
+        {status === "unconfirmed" && (
+          <Button
+            variation="secondary"
+            onClick={() => navigate(`/checkin/${bookingId}`)}
+          >
+            Check in
+          </Button>
+        )}
+
+        {status === "checked-in" && (
+          <Button onClick={() => checkOut(bookingId)} disabled={isCheckingOut}>
+            Check out
+          </Button>
+        )}
         <Button variation="secondary" onClick={moveBack}>
           Back
         </Button>

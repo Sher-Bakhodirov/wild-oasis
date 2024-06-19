@@ -40,6 +40,7 @@ export default function ({ filterKey = "", options = [] }) {
   const filterValue = searchParams.get(filterKey) || options[0]?.value;
   function handleClick(value) {
     searchParams.set(filterKey, value);
+    searchParams.set("page", 1);
     setSearchParams(searchParams);
   }
   return (

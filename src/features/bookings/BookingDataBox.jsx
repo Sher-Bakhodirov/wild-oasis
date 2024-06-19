@@ -103,6 +103,7 @@ const Footer = styled.footer`
 
 // A purely presentational component
 function BookingDataBox({ booking }) {
+  if (!booking) return;
   const {
     created_at,
     startDate,
@@ -115,8 +116,14 @@ function BookingDataBox({ booking }) {
     hasBreakfast,
     observations,
     isPaid,
-    guests: { fullName: guestName, email, country, countryFlag, nationalID },
-    cabins: { name: cabinName },
+    guests: {
+      fullName: guestName,
+      email,
+      country,
+      countryFlag,
+      nationalID,
+    } = {},
+    cabins: { name: cabinName } = {},
   } = booking;
 
   return (
@@ -163,7 +170,7 @@ function BookingDataBox({ booking }) {
           {hasBreakfast ? "Yes" : "No"}
         </DataItem>
 
-        <Price isPaid={isPaid}>
+        <Price isPaid={Number(isPaid)}>
           <DataItem icon={<HiOutlineCurrencyDollar />} label={`Total price`}>
             {formatCurrency(totalPrice)}
 
