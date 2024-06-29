@@ -14,6 +14,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Spinner from "../../ui/Spinner";
 import Modal from "../../ui/Modal";
 import ConfirmDelete from "../../ui/ConfirmDelete";
+import Empty from "../../ui/Empty";
 
 const HeadingGroup = styled.div`
   display: flex;
@@ -30,7 +31,7 @@ function BookingDetail() {
   const { deleteBooking, isDeleting } = useDeleteBooking();
 
   if (isLoading) return <Spinner />;
-  if (error) return <div>Not found</div>;
+  if (error) return <Empty resourceName="Booking"/>;
 
   const status = booking.status;
   const statusToTagName = {

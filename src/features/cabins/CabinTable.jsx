@@ -7,7 +7,7 @@ import { useSearchParams } from "react-router-dom";
 import Empty from "../../ui/Empty";
 
 export default function CabinTable() {
-  const { isLoading, cabins, error } = useCabins();
+  const { isLoading, cabins } = useCabins();
   const [searchParams] = useSearchParams();
   const filterValue = searchParams.get("discount") || "all";
   const sortParam = searchParams.get("sort_by") || "name-asc";
@@ -16,8 +16,8 @@ export default function CabinTable() {
   function sortAndFilterData(data) {
     return data
       .filter((cabin) => {
-        if (filterValue == "with-discount" && cabin.discount == 0) return false;
-        if (filterValue == "no-discount" && cabin.discount > 0) return false;
+        if (filterValue === "with-discount" && cabin.discount === 0) return false;
+        if (filterValue === "no-discount" && cabin.discount > 0) return false;
         return true;
       })
       .sort((a, b) => {

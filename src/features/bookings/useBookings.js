@@ -74,9 +74,9 @@ export function useCheckIn() {
         ...breakfast,
       }),
 
-    onSuccess: (data) => {
-      toast.success(`Booking #${data.id} successfully checked in`);
-      queryClient.invalidateQueries({ type: "active" });
+    onSuccess: ({ id }) => {
+      toast.success(`Booking #${id} successfully checked in`);
+      queryClient.invalidateQueries({ active: true });
       navigate("/");
     },
 
@@ -90,19 +90,15 @@ export function useCheckIn() {
 
 export function useCheckOut() {
   const queryClient = useQueryClient();
-  const {
-    mutate: checkOut,
-    isLoading: isCheckingOut,
-    error,
-  } = useMutation({
-    mutationFn: (id) => {
+  window.queryClient = queryClient;
+  const { mutate: checkOut, isLoading: isCheckingOut } = useMutation({
+    mutationFn: (id) =>
       updateBooking(id, {
         status: "checked-out",
-      });
-    },
-    onSuccess: (data) => {
-      toast.success(`Successfully checked out booking #${data?.id}`);
-      queryClient.invalidateQueries({ type: "active" });
+      }),
+    onSuccess: ({ id }) => {
+      toast.success(`Successfully checked out booking #${id}`);
+      queryClient.invalidateQueries({ active: true });
     },
 
     onError: (data) => {
@@ -121,7 +117,7 @@ export function useDeleteBooking() {
     onSuccess: () => {
       toast.success("Successfully deleted cabin");
       queryClient.invalidateQueries({ type: "active" });
-      navigate("/bookings")
+      navigate("/bookings");
     },
     onError: (error) => {
       toast.error(error.message);

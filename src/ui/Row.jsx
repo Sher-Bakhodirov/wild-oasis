@@ -14,7 +14,7 @@ const vertical = css`
 
 const Row = styled.div`
   display: flex;
-  ${(props) => (props.type == "horizontal" ? horizontal : vertical)}
+  ${(props) => (props.type === "horizontal" ? horizontal : vertical)}
 `;
 
 Row.defaultProps = {

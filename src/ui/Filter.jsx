@@ -35,7 +35,7 @@ const FilterButton = styled.button`
   }
 `;
 
-export default function ({ filterKey = "", options = [] }) {
+export default function Filter({ filterKey = "", options = [] }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const filterValue = searchParams.get(filterKey) || options[0]?.value;
   function handleClick(value) {
